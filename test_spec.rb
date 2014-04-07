@@ -1,25 +1,28 @@
 require_relative "spec_test.rb"
 
-describe Spec_test do
 
+describe Spec_test do
   before do
-    if File.open("test").read == ""
-      system("echo test > test ; ruby spec-test.rb > test")
-    end if File.exist?("test")
+    system("touch spec") if !File.exist? "test"
   end
 
   it 'tests the spec' do
-    if File.open("test").read != ""
+    if File.exist?("spec")
+      File.open("test").read.should include "1 tests, 1 assertions, 0 failures, 0 errors, 0 skips\n"
+    else
       true.should eq(true)
     end if File.exist?("test")
   end
 
   after do
-      system("touch spec ; touch test ; ruby spec_test.rb > test") if !File.exist?("test")
+    if File.exist?("test") && File.open("test").read.length > 1
+        system("rspec test_spec.rb")
+      elsif File.exist?("spec")
+        system("ruby spec_test.rb > test")
+      end
   end
 
 end
 
 
 
-# File.open("test").read.should include "1 tests, 0 assertions, 0 failures, 0 errors, 0 skips\n"
